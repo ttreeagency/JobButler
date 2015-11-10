@@ -4,7 +4,7 @@ Ttree.JobButler
 Introduction
 ------------
 
-Neos CMS package that all Editors and Administrators to manage Jobs. Jobs can be anything:
+Neos CMS package to help Editors and Administrators to manage Jobs. Jobs can be anything:
 
 - Import data from external source
 - Export data (CSV, ...)
