@@ -26,6 +26,9 @@ The package provide a backend module with a simple interface where Editors or Ad
 3. Schedule a Job (TODO, integrate with Ttree.Scheduler)
 4. View the execution history for a given Job (TODO)
 
+
+![Backend Module](https://dl.dropboxusercontent.com/s/uu805iihinsjooz/2015-11-10%20at%2014.53.png?dl=0)
+
 Check the issue tracker to follow ongoing features.
 
 Installation
