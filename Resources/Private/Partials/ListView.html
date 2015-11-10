@@ -1,0 +1,61 @@
+{namespace neos=TYPO3\Neos\ViewHelpers}
+<f:if condition="{jobs}">
+    <div class="neos-row-fluid">
+        <f:for each="{jobs}" key="jobIdentifier" as="jobConfiguration" iteration="iterator">
+            <f:if condition="{jobConfiguration.privilegeTarget}">
+                <f:then>
+                    <f:security.ifAccess privilegeTarget="{jobConfiguration.privilegeTarget}">
+                        <f:render section="job" arguments="{_all}"/>
+                    </f:security.ifAccess>
+                </f:then>
+                <f:else>
+                    <f:render section="job" arguments="{_all}"/>
+                </f:else>
+            </f:if>
+        </f:for>
+    </div>
+</f:if>
+
+<f:section name="job">
+    <div class="neos-span4">
+        <f:form id="{jobConfiguration.shortIdentifier}" class="widget" style="height: 200px;" method="post" action="redirect">
+            <div class="widget-header">
+                <i class="icon-{jobConfiguration.icon} neos-pull-left"></i>
+                <h3>
+                    {jobConfiguration.name}
+                </h3>
+            </div>
+            <div class="widget-body">
+                <p>{jobConfiguration.description}</p>
+            </div>
+            <div class="widget-footer">
+                <f:if condition="{jobConfiguration.options}">
+                    <f:form.button class="neos-button" type="submit" name="action" value="configure" title="Configure the current job now" data="{neos-toggle: 'tooltip'}">
+                        <i class="icon-gear"></i>
+                    </f:form.button>
+                </f:if>
+                <f:form.button class="neos-button" type="submit" name="action" value="history" title="Show the history of the current job" data="{neos-toggle: 'tooltip'}">
+                    <i class="icon-calendar"></i>
+                </f:form.button>
+                <f:form.button class="neos-button" type="submit" name="action" value="schedule" title="Schedule the current job" data="{neos-toggle: 'tooltip'}">
+                    <i class="icon-time"></i>
+                </f:form.button>
+                <f:form.button class="neos-button neos-button-primary" type="submit" name="action" value="execute" title="Execute the current job now" data="{neos-toggle: 'tooltip'}">
+                    <i class="icon-play-sign"></i>
+                </f:form.button>
+            </div>
+            <f:form.hidden name="jobIdentifier" value="{jobConfiguration.identifier}" />
+        </f:form>
+        </a>
+    </div>
+    <f:if condition="{iterator.cycle} % 3">
+        <f:else>
+            <f:if condition="{iterator.isLast}">
+                <f:else>
+                    </div>
+                    <div class="neos-row-fluid">
+                </f:else>
+            </f:if>
+        </f:else>
+    </f:if>
+</f:section>

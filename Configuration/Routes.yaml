@@ -1,0 +1,12 @@
+#
+# Default subroutes configuration for the Ttree.JobButler
+#
+
+-
+  name: 'Job Module - Browser'
+  uriPattern: 'ttree/jobbutler(/{@action}).{@format}'
+  defaults:
+    '@package':    'Ttree.JobButler'
+    '@controller': 'Backend\Job'
+    '@format': 'html'
+  appendExceedingArguments: TRUE

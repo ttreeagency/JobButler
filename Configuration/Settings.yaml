@@ -1,0 +1,25 @@
+Ttree:
+  JobButler:
+    defaultAssetCollection: 'Export'
+
+TYPO3:
+
+  Flow:
+    security:
+      authentication:
+        providers:
+          Typo3BackendProvider:
+            requestPatterns:
+              controllerObjectName: 'TYPO3\Neos\Controller\.*|TYPO3\Neos\Service\.*|TYPO3\Media\Controller\.*|Ttree\JobButler\Controller\Module\Management\.*'
+
+  Neos:
+
+    modules:
+      management:
+        submodules:
+          jobsbutler:
+            label: 'Ttree.JobButler:Modules:jobbutler.label'
+            controller: '\Ttree\JobButler\Controller\Module\Management\JobController'
+            description: 'Ttree.JobButler:Modules:jobbutler.description'
+            icon: 'icon-tasks'
+            privilegeTarget: 'Ttree.JobButler:ExecuteJobs'

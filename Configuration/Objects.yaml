@@ -1,0 +1,9 @@
+Ttree\JobButler\Service\RegistryService:
+  properties:
+    cache:
+      object:
+        factoryObjectName: TYPO3\Flow\Cache\CacheManager
+        factoryMethodName: getCache
+        arguments:
+          1:
+            value: Ttree_JobButler_Registry

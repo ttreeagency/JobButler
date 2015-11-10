@@ -1,0 +1,14 @@
+{
+    "name": "ttree/jobbutler",
+    "type": "typo3-flow-package",
+    "description": "Neos CMS package that all Editors and Administrators to manage Jobs",
+    "require": {
+        "typo3/flow": "*",
+        "typo3/neos": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ttree\\JobButler\\": "Classes"
+        }
+    }
+}

@@ -1,0 +1,27 @@
+#                                                                        #
+# Security policy for the Neos Media Browser package                     #
+#                                                                        #
+
+privilegeTargets:
+
+  'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+
+    'Ttree.JobButler:ExecuteJobs':
+      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|history|schedule|redirect)Action())'
+
+    'Ttree.JobButler:ManageJobs':
+      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|history|schedule|redirect)Action())'
+
+roles:
+
+  'TYPO3.Neos:Editor':
+    privileges:
+      -
+        privilegeTarget: 'Ttree.JobButler:ExecuteJobs'
+        permission: GRANT
+
+  'TYPO3.Neos:Administrator':
+    privileges:
+      -
+        privilegeTarget: 'Ttree.JobButler:ManageJobs'
+        permission: GRANT

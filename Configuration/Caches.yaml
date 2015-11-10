@@ -1,0 +1,3 @@
+Ttree_JobButler_Registry:
+  backend: TYPO3\Flow\Cache\Backend\SimpleFileBackend
+  persistent: true

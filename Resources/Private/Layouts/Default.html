@@ -1,0 +1,15 @@
+<div class="{settings.bodyClasses}">
+    <div class="ttree-jobbutler-options">
+        <f:render section="Options" optional="TRUE" />
+    </div>
+    <div class="ttree-jobbutler-content{f:if(condition: '{tags -> f:count()} > 25', then: ' ttree-jobbutler-aside-condensed')}">
+        <div class="ttree-jobbutler-assets">
+            <div class="neos-notification-container">
+                <f:render partial="FlashMessages" />
+            </div>
+
+            <f:render section="Content" />
+        </div>
+    </div>
+</div>
+<f:render section="Scripts" optional="TRUE" />

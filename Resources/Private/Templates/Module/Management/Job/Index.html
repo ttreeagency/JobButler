@@ -1,0 +1,12 @@
+{namespace neos=TYPO3\Neos\ViewHelpers}
+<f:layout name="Default" />
+
+<f:section name="Title">Available Jobs</f:section>
+
+<f:section name="Content">
+    <f:render partial="ListView" arguments="{jobs: jobs}" />
+</f:section>
+
+<f:section name="Scripts">
+
+</f:section>
