@@ -71,6 +71,9 @@ class JobController extends ActionController
             $this->addFlashMessage(sprintf('Unable to find a Job Configuration with identifier "%s"', $jobIdentifier), '', Message::SEVERITY_ERROR);
             $this->redirect('index');
         }
+        if ($jobConfiguration->isAsynchronous() && isset($this->settings['maximumExecutionTime'])) {
+            set_time_limit((integer)$this->settings['maximumExecutionTime']);
+        }
         $startTime = microtime(true);
         if ($this->jobRunnerService->execute($jobConfiguration, $options)) {
             if ($jobConfiguration->isAsynchronous()) {

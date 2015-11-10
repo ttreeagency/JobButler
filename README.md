@@ -116,6 +116,12 @@ You can extend this Job to get data from Google Analytics and you have a nice sp
 
 Now go to the backend module, you should see your Job, ready for execution.
 
+Settings
+--------
+
+- ```defaultAssetCollection```: Default name for the default AssetCollection (default: Export)
+- ```maximumExecutionTime```: Override the system maximum excution time from the php.ini (default: 300)
+
 Acknowledgments
 ---------------
 

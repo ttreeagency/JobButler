@@ -1,6 +1,7 @@
 Ttree:
   JobButler:
     defaultAssetCollection: 'Export'
+    maximumExecutionTime: 300
 
 TYPO3:
 
