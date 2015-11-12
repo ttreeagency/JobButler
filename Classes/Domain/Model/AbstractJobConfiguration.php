@@ -16,6 +16,7 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Configuration\ConfigurationManager;
 use TYPO3\Flow\I18n\Translator;
 use TYPO3\Flow\Resource\ResourceManager;
+use TYPO3\Flow\Utility\Arrays;
 use TYPO3\Flow\Utility\Unicode\Functions;
 use TYPO3\Media\Domain\Model\AssetCollection;
 use TYPO3\Media\Domain\Model\Document;
@@ -70,6 +71,11 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
     protected $settings;
 
     /**
+     * @var array
+     */
+    protected $defaultOptions = [];
+
+    /**
      * Lazy load settings
      */
     public function initializeSettings()
@@ -121,9 +127,9 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function hasOptions()
+    public function getWizardFactoryClass()
     {
-        return false;
+        return null;
     }
 
     /**
@@ -156,6 +162,14 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
     public function getTranslationSource()
     {
         return 'Jobs';
+    }
+
+    /**
+     * @param array $options
+     * @return array
+     */
+    protected function mergeDefaultOptions(array $options) {
+        return Arrays::arrayMergeRecursiveOverrule($this->defaultOptions, $options);
     }
 
     /**

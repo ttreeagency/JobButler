@@ -7,10 +7,10 @@ privilegeTargets:
   'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
 
     'Ttree.JobButler:ExecuteJobs':
-      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|history|schedule|redirect)Action())'
+      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|history|schedule|redirect|configurationWizard)Action())'
 
     'Ttree.JobButler:ManageJobs':
-      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|history|schedule|redirect)Action())'
+      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|history|schedule|redirect|configurationWizard)Action())'
 
 roles:
 

@@ -52,13 +52,6 @@ interface JobConfigurationInterface
     public function isAsynchronous();
 
     /**
-     * Check if the current job can be configured
-     *
-     * @return boolean
-     */
-    public function hasOptions();
-
-    /**
      * @return string
      */
     public function getIcon();
@@ -90,6 +83,13 @@ interface JobConfigurationInterface
      * @return string|null
      */
     public function getPrivilegeTarget();
+
+    /**
+     * If the current provide a configuration wizard
+     *
+     * @return string|null
+     */
+    public function getWizardFactoryClass();
 
     /**
      * Single execution of the current job

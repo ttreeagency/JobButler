@@ -116,6 +116,59 @@ You can extend this Job to get data from Google Analytics and you have a nice sp
 
 Now go to the backend module, you should see your Job, ready for execution.
 
+Adding a configuration Wizard before executing a Job
+----------------------------------------------------
+
+Your Job need to provide a Form factory to render the form:
+
+```xml
+    ...
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getWizardFactoryClass()
+    {
+        return 'Your\Package\JobConfiguration\ExportDocumentWizard';
+    }
+    
+    ...
+```
+
+Provide a simple Factor:
+
+```php
+<?php
+namespace Your\Package\JobConfiguration;
+
+/**
+ * Export Profile Index Job
+ */
+class ExportDocumentWizard extends AbstractFormFactory {
+
+    /**
+     * @param array $factorySpecificConfiguration
+     * @param string $presetName
+     * @return \TYPO3\Form\Core\Model\FormDefinition
+     */
+    public function build(array $factorySpecificConfiguration, $presetName) {
+        $formConfiguration = $this->getPresetConfiguration($presetName);
+        $form = new FormDefinition('options', $formConfiguration);
+
+        $page = $form->createPage('page');
+
+        $reportIdentifier = $page->createElement('reportIdentifier', 'TYPO3.Form:SingleLineText');
+        $reportIdentifier->setLabel('Report Identifier');
+        $reportIdentifier->addValidator(new NotEmptyValidator());
+
+        return $form;
+    }
+}
+
+``` 
+
+The ``RenderViewHelper``` take care for the finisher configuration and arguments processing.
+
 Settings
 --------
 

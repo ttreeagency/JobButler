@@ -1,0 +1,11 @@
+{namespace neos=TYPO3\Neos\ViewHelpers}
+{namespace job=Ttree\JobButler\ViewHelpers}
+<f:layout name="Default" />
+
+<f:section name="Title">Job Configuration Wizard</f:section>
+
+<f:section name="Content">
+    <h1>Configure "{jobConfiguration.name}"</h1>
+    <br>
+    <job:render factoryClass="{jobConfiguration.wizardFactoryClass}" jobConfiguration="{jobConfiguration}" />
+</f:section>
