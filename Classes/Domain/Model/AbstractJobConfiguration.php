@@ -128,7 +128,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
             if ($status !== true) {
                 continue;
             }
-            if (strpos($tag, ':') !== FALSE) {
+            if (strpos($tag, ':') !== false) {
                 list($packageKey, $identifier) = explode(':', $tag);
             } else {
                 $packageKey = 'Ttree.JobButler';
@@ -216,7 +216,8 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      * @param mixed $default
      * @return mixed
      */
-    protected function getOption($option, $default) {
+    protected function getOption($option, $default)
+    {
         $settings = $this->getSettings();
         $defaultSettings = Arrays::getValueByPath($settings, array('jobSettings', '*')) ?: [];
         $currentSettings = array_merge($defaultSettings, Arrays::getValueByPath($settings, array('jobSettings', $this->getIdentifier())) ?: []);
