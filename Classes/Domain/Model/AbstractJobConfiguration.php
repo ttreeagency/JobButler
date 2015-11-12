@@ -114,7 +114,8 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getIcon()
     {
-        return 'tasks';
+        $this->initializeSettings();
+        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'icon')) ?: 'tasks';
     }
 
     /**
@@ -122,7 +123,8 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getTags()
     {
-        return ['Default'];
+        $this->initializeSettings();
+        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'tags')) ?: [];
     }
 
     /**
@@ -130,7 +132,17 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getWizardFactoryClass()
     {
-        return null;
+        $this->initializeSettings();
+        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'wizardFactoryClass')) ?: null;
+    }
+
+    /**
+     * {@inheritdoc
+     */
+    public function isAsynchronous()
+    {
+        $this->initializeSettings();
+        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'asynchronous')) ?: false;
     }
 
     /**
@@ -154,7 +166,8 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getPrivilegeTarget()
     {
-        return null;
+        $this->initializeSettings();
+        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'privilegeTarget')) ?: null;
     }
 
     /**

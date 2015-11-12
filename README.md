@@ -118,6 +118,26 @@ You can extend this Job to get data from Google Analytics and you have a nice sp
 
 Now go to the backend module, you should see your Job, ready for execution.
 
+How to configure a new Job
+--------------------------
+
+```yaml
+Ttree:
+  JobButler:
+    jobSettings:
+      'Your\Package\JobConfiguration\ExportDocumentJob':
+        'icon': 'circle-arrow-down'
+        'wizardFactoryClass': 'Your\Package\JobConfiguration\Wizard\ExportProfileByReportWizard'
+```
+
+Currently the following settings are supported by ```AbstractJobConfiguration```:
+
+- icon (string), default 'task'
+- tags (array), default emtpy array
+- wizardFactoryClass (string), default null
+- privilegeTarget (string), default null
+- asynchronous (boolean), default false
+
 Adding a configuration Wizard before executing a Job
 ----------------------------------------------------
 
