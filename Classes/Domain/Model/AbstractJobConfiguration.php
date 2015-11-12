@@ -76,13 +76,14 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
     protected $defaultOptions = [];
 
     /**
-     * Lazy load settings
+     * Get package settings
      */
-    public function initializeSettings()
+    public function getSettings()
     {
         if (!is_array($this->settings)) {
             $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Ttree.JobButler');
         }
+        return $this->settings;
     }
 
     /**
@@ -114,8 +115,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getIcon()
     {
-        $this->initializeSettings();
-        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'icon')) ?: 'tasks';
+        return $this->getOption('icon', 'tasks');
     }
 
     /**
@@ -123,8 +123,22 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getTags()
     {
-        $this->initializeSettings();
-        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'tags')) ?: [];
+        $tags = [];
+        foreach ($this->getOption('tags', []) as $tag => $status) {
+            if ($status !== true) {
+                continue;
+            }
+            if (strpos($tag, ':') !== FALSE) {
+                list($packageKey, $identifier) = explode(':', $tag);
+            } else {
+                $packageKey = 'Ttree.JobButler';
+                $identifier = $tag;
+            }
+            $translation = $this->translator->translateById($identifier, [], null, null, 'JobTags', $packageKey);
+            $tags[md5($translation)] = $translation;
+        }
+        natsort($tags);
+        return array_values($tags);
     }
 
     /**
@@ -132,8 +146,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getWizardFactoryClass()
     {
-        $this->initializeSettings();
-        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'wizardFactoryClass')) ?: null;
+        return $this->getOption('wizardFactoryClass', null);
     }
 
     /**
@@ -141,8 +154,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function isAsynchronous()
     {
-        $this->initializeSettings();
-        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'asynchronous')) ?: false;
+        return $this->getOption('asynchronous', false);
     }
 
     /**
@@ -166,8 +178,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getPrivilegeTarget()
     {
-        $this->initializeSettings();
-        return Arrays::getValueByPath($this->settings, array('jobSettings', $this->getIdentifier(), 'privilegeTarget')) ?: null;
+        return $this->getOption('privilegeTarget', null);
     }
 
     /**
@@ -198,6 +209,18 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
             return null;
         }
         return $translation;
+    }
+
+    /**
+     * @param string $option
+     * @param mixed $default
+     * @return mixed
+     */
+    protected function getOption($option, $default) {
+        $settings = $this->getSettings();
+        $defaultSettings = Arrays::getValueByPath($settings, array('jobSettings', '*')) ?: [];
+        $currentSettings = array_merge($defaultSettings, Arrays::getValueByPath($settings, array('jobSettings', $this->getIdentifier())) ?: []);
+        return Arrays::getValueByPath($currentSettings, $option) ?: $default;
     }
 
     /**
@@ -269,8 +292,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     protected function createAssetCollectionIfMissing()
     {
-        $this->initializeSettings();
-        $collectionName = $this->settings['defaultAssetCollection'];
+        $collectionName = $this->getSettings()['defaultAssetCollection'];
         $collection = $this->assetCollectionRepository->findOneByTitle($collectionName);
         if ($collection === null) {
             $collection = new AssetCollection($collectionName);

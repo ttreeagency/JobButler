@@ -43,7 +43,8 @@ class JobController extends ActionController
      */
     public function indexAction()
     {
-        $this->view->assign('jobs', $this->jobConfigurationRepository->findAll());
+        $jobs = $this->jobConfigurationRepository->findAll();
+        $this->view->assign('jobs', $jobs);
     }
 
     /**

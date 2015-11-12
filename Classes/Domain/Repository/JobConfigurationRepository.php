@@ -35,6 +35,10 @@ class JobConfigurationRepository
     protected $objectManager;
 
     /**
+     * Return all Jobs grouped by tags
+     *
+     * A single Job can be attached to multiple Tags.
+     *
      * @return array
      */
     public function findAll()
@@ -44,13 +48,23 @@ class JobConfigurationRepository
         foreach (self::getAvailableJobConfigurations($this->objectManager) as $jobConfiguration) {
             /** @var JobConfigurationInterface $implementation */
             $implementation = $this->objectManager->get($jobConfiguration['implementation']);
-            $jobConfigurations[] = [
+            $job = [
                 'name' => $implementation->getName(),
                 'implementation' => $implementation
             ];
+            foreach ($implementation->getTags() as $tag) {
+                if (!isset($jobConfigurations[$tag])) {
+                    $jobConfigurations[$tag] = [];
+                }
+                $jobConfigurations[$tag][] = $job;
+            }
         }
 
-        return $this->orderJobs($jobConfigurations);
+        foreach ($jobConfigurations as $tag => $jobConfigurationsByTag) {
+            $jobConfigurations[$tag] = $this->orderJobs($jobConfigurationsByTag);
+        }
+
+        return $jobConfigurations;
     }
 
     /**
@@ -59,13 +73,13 @@ class JobConfigurationRepository
      */
     public function findOneByIdentifier($identifier)
     {
-        $jobs = $this->findAll();
+        $jobs = $this->getAvailableJobConfigurations($this->objectManager);
         foreach ($jobs as $job) {
             /** @var JobConfigurationInterface $job */
-            if ($job->getIdentifier() !== $identifier) {
+            if ($job['identifier'] !== $identifier) {
                 continue;
             }
-            return $job;
+            return $this->objectManager->get($job['implementation']);
         }
     }
 

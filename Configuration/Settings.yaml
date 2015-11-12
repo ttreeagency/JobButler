@@ -10,6 +10,11 @@ Ttree:
       'schedule': 'forward'
       'configurationWizard': 'redirect'
 
+    jobSettings:
+      '*':
+        'tags':
+          'all': TRUE
+
 TYPO3:
 
   Flow:

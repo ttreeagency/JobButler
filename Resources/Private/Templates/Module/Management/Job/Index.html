@@ -4,5 +4,9 @@
 <f:section name="Title">Available Jobs</f:section>
 
 <f:section name="Content">
-    <f:render partial="ListView" arguments="{jobs: jobs}" />
+    <f:for each="{jobs}" as="jobsByTag" key="tag">
+        <h1>{tag}</h1>
+        <hr>
+        <f:render partial="ListView" arguments="{jobs: jobsByTag}" />
+    </f:for>
 </f:section>
