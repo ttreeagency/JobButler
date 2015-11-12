@@ -1,6 +1,8 @@
 Ttree.JobButler
 ===============
 
+[![StyleCI](https://styleci.io/repos/45913813/shield)](https://styleci.io/repos/45913813)
+
 Introduction
 ------------
 
