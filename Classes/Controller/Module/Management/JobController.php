@@ -51,14 +51,38 @@ class JobController extends ActionController
      * @param array $options
      */
     public function redirectAction($action, $jobIdentifier, array $options = []) {
-        if (!in_array($action, ['execute', 'history', 'schedule'])) {
+        $action = trim($action);
+        $jobIdentifier = trim($jobIdentifier);
+        $settings = array_filter($this->settings['allowedActionRedirect'] ?: []);
+        $allowedActionRedirect = array_keys($settings);
+        if (!in_array($action, $allowedActionRedirect)) {
             $this->addFlashMessage(sprintf('Disallowed action (%s)', $action), '', Message::SEVERITY_ERROR);
+
             $this->redirect('index');
         }
-        $this->forward($action, null, null, [
-            'jobIdentifier' => $jobIdentifier,
-            'options' => $options
-        ]);
+
+        if (!isset($settings[$action])) {
+            $settings[$action] = 'forward';
+        }
+
+        switch ($settings[$action]) {
+            case 'redirect':
+                $this->redirect($action, null, null, [
+                    'jobIdentifier' => $jobIdentifier,
+                    'options' => $options
+                ]);
+                break;
+            case 'forward':
+                $this->forward($action, null, null, [
+                    'jobIdentifier' => $jobIdentifier,
+                    'options' => $options
+                ]);
+                break;
+            default:
+                $this->addFlashMessage(sprintf('Illegal action (%s), check your settings.', $action), '', Message::SEVERITY_ERROR);
+
+                $this->redirect('index');
+        }
     }
 
     /**
@@ -84,6 +108,14 @@ class JobController extends ActionController
             }
         }
         $this->redirect('index');
+    }
+
+    /**
+     * @param string $jobIdentifier
+     */
+    public function configurationWizardAction($jobIdentifier) {
+        $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
+        $this->view->assign('jobConfiguration', $jobConfiguration);
     }
 
     /**

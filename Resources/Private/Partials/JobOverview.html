@@ -1,0 +1,40 @@
+{namespace neos=TYPO3\Neos\ViewHelpers}
+<div class="neos-span4">
+    <f:form id="{jobConfiguration.shortIdentifier}" class="widget" style="height: 200px;" method="post" action="redirect">
+        <div class="widget-header">
+            <i class="icon-{jobConfiguration.icon} neos-pull-left"></i>
+            <h3>
+                {jobConfiguration.name}
+            </h3>
+        </div>
+        <div class="widget-body">
+            <p>{jobConfiguration.description}</p>
+        </div>
+        <div class="widget-footer">
+            <f:if condition="{jobConfiguration.options}">
+                <f:form.button class="neos-button" type="submit" name="action" value="configure" title="Configure the current job now" data="{neos-toggle: 'tooltip'}">
+                    <i class="icon-gear"></i>
+                </f:form.button>
+            </f:if>
+            <f:form.button class="neos-button" type="submit" name="action" value="history" title="Show the history of the current job" data="{neos-toggle: 'tooltip'}">
+                <i class="icon-calendar"></i>
+            </f:form.button>
+            <f:form.button class="neos-button" type="submit" name="action" value="schedule" title="Schedule the current job" data="{neos-toggle: 'tooltip'}">
+                <i class="icon-time"></i>
+            </f:form.button>
+            <f:if condition="{jobConfiguration.wizardFactoryClass}">
+                <f:then>
+                    <f:form.button class="neos-button neos-button-primary" type="submit" name="action" value="configurationWizard" title="Configure the current job and execute" data="{neos-toggle: 'tooltip'}">
+                        <i class="icon-play-sign"></i>
+                    </f:form.button>
+                </f:then>
+                <f:else>
+                    <f:form.button class="neos-button neos-button-primary" type="submit" name="action" value="execute" title="Execute the current job now" data="{neos-toggle: 'tooltip'}">
+                        <i class="icon-play-sign"></i>
+                    </f:form.button>
+                </f:else>
+            </f:if>
+        </div>
+        <f:form.hidden name="jobIdentifier" value="{jobConfiguration.identifier}" />
+    </f:form>
+</div>
