@@ -16,6 +16,7 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Object\ObjectManagerInterface;
 use TYPO3\Flow\Tests\Unit\Utility\PositionalArraySorterTest;
 use TYPO3\Flow\Utility\PositionalArraySorter;
+use TYPO3\Flow\Utility\Unicode\Functions;
 
 /**
  * Job Configuration Repository
@@ -36,21 +37,28 @@ class JobConfigurationRepository
     /**
      * @return array
      */
-    public function findAll() {
+    public function findAll()
+    {
         $jobConfigurations = [];
 
         foreach (self::getAvailableJobConfigurations($this->objectManager) as $jobConfiguration) {
-            $jobConfigurations[] = $this->objectManager->get($jobConfiguration['implementation']);
+            /** @var JobConfigurationInterface $implementation */
+            $implementation = $this->objectManager->get($jobConfiguration['implementation']);
+            $jobConfigurations[] = [
+                'name' => $implementation->getName(),
+                'implementation' => $implementation
+            ];
         }
 
-        return $jobConfigurations;
+        return $this->orderJobs($jobConfigurations);
     }
 
     /**
      * @param string
      * @return JobConfigurationInterface
      */
-    public function findOneByIdentifier($identifier) {
+    public function findOneByIdentifier($identifier)
+    {
         $jobs = $this->findAll();
         foreach ($jobs as $job) {
             /** @var JobConfigurationInterface $job */
@@ -72,7 +80,7 @@ class JobConfigurationRepository
     {
         $reflectionService = $objectManager->get('TYPO3\Flow\Reflection\ReflectionService');
 
-        $result = array();
+        $result = [];
 
         foreach ($reflectionService->getAllImplementationClassNamesForInterface(self::JOB_CONFIGURATION_INTERFACE) as $implementation) {
             /** @var JobConfigurationInterface $jobConfiguration */
@@ -81,6 +89,32 @@ class JobConfigurationRepository
                 'implementation' => $implementation,
                 'identifier' => $jobConfiguration->getIdentifier()
             ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Order current job list, order by name by default
+     *
+     * @param array $jobConfigurations
+     * @param string $orderBy
+     * @return array
+     */
+    protected function orderJobs(array $jobConfigurations, $orderBy = 'name')
+    {
+        usort($jobConfigurations, function ($a, $b) use ($orderBy) {
+            $a = Functions::strtolower(trim($a[$orderBy]));
+            $b = Functions::strtolower(trim($b[$orderBy]));
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
+        });
+
+        $result = [];
+        foreach ($jobConfigurations as $jobConfiguration) {
+            $result[] = $jobConfiguration['implementation'];
         }
 
         return $result;
