@@ -45,7 +45,7 @@ class RenderViewHelper extends AbstractViewHelper
     /**
      * @var boolean
      */
-    protected $escapeOutput = FALSE;
+    protected $escapeOutput = false;
 
     /**
      * @Flow\Inject
@@ -61,7 +61,7 @@ class RenderViewHelper extends AbstractViewHelper
      * @param array $overrideConfiguration factory specific configuration
      * @return string the rendered form
      */
-    public function render(JobConfigurationInterface $jobConfiguration, $persistenceIdentifier = NULL, $factoryClass = 'TYPO3\Form\Factory\ArrayFormFactory', $presetName = 'default', array $overrideConfiguration = array())
+    public function render(JobConfigurationInterface $jobConfiguration, $persistenceIdentifier = null, $factoryClass = 'TYPO3\Form\Factory\ArrayFormFactory', $presetName = 'default', array $overrideConfiguration = [])
     {
         if (isset($persistenceIdentifier)) {
             $overrideConfiguration = Arrays::arrayMergeRecursiveOverrule($this->formPersistenceManager->load($persistenceIdentifier), $overrideConfiguration);
@@ -70,7 +70,7 @@ class RenderViewHelper extends AbstractViewHelper
         $factory = $this->objectManager->get($factoryClass);
         /** @var FormDefinition $formDefinition */
         $formDefinition = $factory->build($overrideConfiguration, $presetName);
-        ObjectAccess::setProperty($formDefinition, 'identifier', 'options', TRUE);
+        ObjectAccess::setProperty($formDefinition, 'identifier', 'options', true);
         $this->postProcessFormDefinition($jobConfiguration, $formDefinition);
 
         $response = new Response($this->controllerContext->getResponse());
@@ -84,7 +84,8 @@ class RenderViewHelper extends AbstractViewHelper
      * @param JobConfigurationInterface $jobConfiguration
      * @param FormDefinition $formDefinition
      */
-    protected function postProcessFormDefinition(JobConfigurationInterface $jobConfiguration, FormDefinition $formDefinition) {
+    protected function postProcessFormDefinition(JobConfigurationInterface $jobConfiguration, FormDefinition $formDefinition)
+    {
         $redirectFinisher = new ExecuteJobFinisher();
         $redirectFinisher->setOptions([
             'path' => 'management/jobsbutler',

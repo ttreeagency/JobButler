@@ -31,7 +31,8 @@ class RegistryService
      * @param string $key
      * @return boolean
      */
-    public function has($key) {
+    public function has($key)
+    {
         return $this->cache->has($key);
     }
 
@@ -39,7 +40,8 @@ class RegistryService
      * @param string $key
      * @return boolean
      */
-    public function get($key) {
+    public function get($key)
+    {
         return $this->cache->get($key);
     }
 
@@ -48,7 +50,8 @@ class RegistryService
      * @param string $value
      * @return boolean
      */
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         return $this->cache->set($key, $value);
     }
 }

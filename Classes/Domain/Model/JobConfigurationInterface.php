@@ -98,5 +98,4 @@ interface JobConfigurationInterface
      * @return boolean true on job success, always true for async job
      */
     public function execute(array $options = []);
-
 }

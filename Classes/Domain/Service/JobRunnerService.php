@@ -49,5 +49,4 @@ class JobRunnerService implements JobRunnerServiceInterface
     protected function emitJobExecuted($status, JobConfigurationInterface $jobConfiguration, array $options = [])
     {
     }
-
 }

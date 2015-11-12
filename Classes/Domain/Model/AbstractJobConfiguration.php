@@ -96,7 +96,8 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getShortIdentifier() {
+    public function getShortIdentifier()
+    {
         return md5($this->getIdentifier());
     }
 
@@ -168,7 +169,8 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      * @param array $options
      * @return array
      */
-    protected function mergeDefaultOptions(array $options) {
+    protected function mergeDefaultOptions(array $options)
+    {
         return Arrays::arrayMergeRecursiveOverrule($this->defaultOptions, $options);
     }
 
@@ -180,7 +182,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
     {
         $translation = $this->translator->translateById($identifier, [], null, null, $this->getTranslationSource(), $this->getPackageKey());
         if ($translation === $identifier) {
-            return NULL;
+            return null;
         }
         return $translation;
     }
@@ -190,10 +192,10 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      * @param string $filename
      * @return Document
      */
-    protected function storeDocument($content, $filename) {
+    protected function storeDocument($content, $filename)
+    {
         $cacheKey = md5(get_called_class() . '::' . $filename);
-        $createDocument = function($cacheKey, $content, $filename)
-        {
+        $createDocument = function ($cacheKey, $content, $filename) {
             $resource = $this->resourceManager->importResourceFromContent($content, $filename);
             $this->registry->set($cacheKey, $resource->getSha1());
             $document = new Document($resource);
@@ -205,7 +207,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
             $this->documentRepository->add($document);
         } else {
             $document = $this->documentRepository->findOneByResourceSha1($this->registry->get($cacheKey));
-            if ($document === NULL) {
+            if ($document === null) {
                 $document = $createDocument($cacheKey, (string)$content, $filename);
                 $this->documentRepository->add($document);
             } else {
@@ -224,7 +226,8 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
     /**
      * @param string $filename
      */
-    protected function deleteDocument($filename) {
+    protected function deleteDocument($filename)
+    {
         $cacheKey = md5(get_called_class() . '::' . $filename);
         $document = $this->documentRepository->findOneByResourceSha1($this->registry->get($cacheKey));
         if ($document === null) {
@@ -262,5 +265,4 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
         }
         return $collection;
     }
-
 }

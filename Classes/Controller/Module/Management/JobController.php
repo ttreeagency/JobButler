@@ -41,7 +41,8 @@ class JobController extends ActionController
     /**
      * Show available jobs
      */
-    public function indexAction() {
+    public function indexAction()
+    {
         $this->view->assign('jobs', $this->jobConfigurationRepository->findAll());
     }
 
@@ -50,7 +51,8 @@ class JobController extends ActionController
      * @param string $jobIdentifier
      * @param array $options
      */
-    public function redirectAction($action, $jobIdentifier, array $options = []) {
+    public function redirectAction($action, $jobIdentifier, array $options = [])
+    {
         $action = trim($action);
         $jobIdentifier = trim($jobIdentifier);
         $settings = array_filter($this->settings['allowedActionRedirect'] ?: []);
@@ -89,9 +91,10 @@ class JobController extends ActionController
      * @param string $jobIdentifier
      * @param array $options
      */
-    public function executeAction($jobIdentifier, array $options = []) {
+    public function executeAction($jobIdentifier, array $options = [])
+    {
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
-        if ($jobConfiguration === NULL) {
+        if ($jobConfiguration === null) {
             $this->addFlashMessage(sprintf('Unable to find a Job Configuration with identifier "%s"', $jobIdentifier), '', Message::SEVERITY_ERROR);
             $this->redirect('index');
         }
@@ -113,7 +116,8 @@ class JobController extends ActionController
     /**
      * @param string $jobIdentifier
      */
-    public function configurationWizardAction($jobIdentifier) {
+    public function configurationWizardAction($jobIdentifier)
+    {
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
         $this->view->assign('jobConfiguration', $jobConfiguration);
     }
@@ -122,7 +126,8 @@ class JobController extends ActionController
      * @param string $jobIdentifier
      * @param array $options
      */
-    public function historyAction($jobIdentifier, array $options = []) {
+    public function historyAction($jobIdentifier, array $options = [])
+    {
         $jobConfiguration = $this->loadJobConfiguration($jobIdentifier);
         $this->addFlashMessage('This action is currently not implemented', '', Message::SEVERITY_WARNING);
         $this->redirect('index');
@@ -132,7 +137,8 @@ class JobController extends ActionController
      * @param string $jobIdentifier
      * @param array $options
      */
-    public function scheduleAction($jobIdentifier, array $options = []) {
+    public function scheduleAction($jobIdentifier, array $options = [])
+    {
         $jobConfiguration = $this->loadJobConfiguration($jobIdentifier);
         $this->addFlashMessage('This action is currently not implemented', '', Message::SEVERITY_ERROR);
         $this->redirect('index');
@@ -142,14 +148,14 @@ class JobController extends ActionController
      * @param string $jobIdentifier
      * @return JobConfigurationInterface
      */
-    protected function loadJobConfiguration($jobIdentifier) {
+    protected function loadJobConfiguration($jobIdentifier)
+    {
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
-        if ($jobConfiguration === NULL) {
+        if ($jobConfiguration === null) {
             $this->addFlashMessage(sprintf('Unable to find a Job Configuration with identifier "%s"', $jobIdentifier), '', Message::SEVERITY_ERROR);
             $this->redirect('index');
         }
 
         return $jobConfiguration;
     }
-
 }

@@ -119,5 +119,4 @@ class JobConfigurationRepository
 
         return $result;
     }
-
 }

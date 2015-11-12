@@ -98,7 +98,8 @@ class ExecuteJobFinisher extends AbstractFinisher
      * @param string $jobIdentifier
      * @param array $options
      */
-    protected function executeJob($jobIdentifier, array $options = []) {
+    protected function executeJob($jobIdentifier, array $options = [])
+    {
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
         $startTime = microtime(true);
         if ($this->jobRunnerService->execute($jobConfiguration, $options)) {
@@ -114,7 +115,8 @@ class ExecuteJobFinisher extends AbstractFinisher
     /**
      * @param string $uri
      */
-    protected function redirect($uri) {
+    protected function redirect($uri)
+    {
         $formRuntime = $this->finisherContext->getFormRuntime();
 
         $response = $formRuntime->getResponse();
