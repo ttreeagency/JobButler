@@ -12,10 +12,8 @@ namespace Ttree\JobButler\Domain\Repository;
  */
 
 use Ttree\JobButler\Domain\Model\JobConfigurationInterface;
+use Ttree\JobButler\Domain\Service\JobConfigurationService;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Object\ObjectManagerInterface;
-use TYPO3\Flow\Tests\Unit\Utility\PositionalArraySorterTest;
-use TYPO3\Flow\Utility\PositionalArraySorter;
 use TYPO3\Flow\Utility\Unicode\Functions;
 
 /**
@@ -26,13 +24,11 @@ use TYPO3\Flow\Utility\Unicode\Functions;
 class JobConfigurationRepository
 {
 
-    const JOB_CONFIGURATION_INTERFACE = 'Ttree\JobButler\Domain\Model\JobConfigurationInterface';
-
     /**
+     * @var JobConfigurationService
      * @Flow\Inject
-     * @var ObjectManagerInterface
      */
-    protected $objectManager;
+    protected $jobConfigurationService;
 
     /**
      * Return all Jobs grouped by tags
@@ -45,9 +41,9 @@ class JobConfigurationRepository
     {
         $jobConfigurations = [];
 
-        foreach (self::getAvailableJobConfigurations($this->objectManager) as $jobConfiguration) {
+        foreach ($this->jobConfigurationService->getServiceConfiguration() as $jobConfiguration) {
             /** @var JobConfigurationInterface $implementation */
-            $implementation = $this->objectManager->get($jobConfiguration['implementation']);
+            $implementation = $jobConfiguration['implementation'];
             $job = [
                 'name' => $implementation->getName(),
                 'implementation' => $implementation
@@ -73,39 +69,14 @@ class JobConfigurationRepository
      */
     public function findOneByIdentifier($identifier)
     {
-        $jobs = $this->getAvailableJobConfigurations($this->objectManager);
+        $jobs = $this->jobConfigurationService->getServiceConfiguration();
         foreach ($jobs as $job) {
             /** @var JobConfigurationInterface $job */
             if ($job['identifier'] !== $identifier) {
                 continue;
             }
-            return $this->objectManager->get($job['implementation']);
+            return $job['implementation'];
         }
-    }
-
-    /**
-     * Returns a map of all available jobs configuration
-     *
-     * @param ObjectManagerInterface $objectManager
-     * @return array Array of available jobs configuration
-     * @Flow\CompileStatic
-     */
-    public static function getAvailableJobConfigurations($objectManager)
-    {
-        $reflectionService = $objectManager->get('TYPO3\Flow\Reflection\ReflectionService');
-
-        $result = [];
-
-        foreach ($reflectionService->getAllImplementationClassNamesForInterface(self::JOB_CONFIGURATION_INTERFACE) as $implementation) {
-            /** @var JobConfigurationInterface $jobConfiguration */
-            $jobConfiguration = $objectManager->get($implementation);
-            $result[$jobConfiguration->getIdentifier()] = [
-                'implementation' => $implementation,
-                'identifier' => $jobConfiguration->getIdentifier()
-            ];
-        }
-
-        return $result;
     }
 
     /**
