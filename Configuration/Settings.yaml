@@ -27,7 +27,14 @@ TYPO3:
 
   Neos:
 
+    userInterface:
+
+      translation:
+        autoInclude:
+          'Ttree.JobButler': ['Modules']
+
     modules:
+
       management:
         submodules:
           jobsbutler:
