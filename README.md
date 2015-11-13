@@ -57,6 +57,8 @@ namespace Your\Package\JobConfiguration;
  */
 class ExportDocumentJob extends AbstractJobConfiguration
 {
+    use DocumentJobTrait;
+    
     public function getIcon()
     {
         return 'print';
@@ -91,7 +93,7 @@ class ExportDocumentJob extends AbstractJobConfiguration
 
 ```
 
-The method ```AbstractJobConfiguration::storeDocument``` will automatically create a new AssetCollection name "Export"
+The method ```DocumentJobTrait::storeDocument``` will automatically create a new AssetCollection name "Export"
 (check [Settings.yaml](Settings.yaml) to change the asset collection name), and use a persistent cache to keep track of
 created file. If you execute multiple time the same Job, it will resuse the same Document to store the result (this need
 to be improved later on, but currently work correctly).
