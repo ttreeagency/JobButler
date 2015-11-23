@@ -10,6 +10,7 @@ namespace Ttree\JobButler\Form\Finishers;
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
+use Ttree\JobButler\Domain\Model\JobConfigurationOptions;
 use Ttree\JobButler\Domain\Repository\JobConfigurationRepository;
 use Ttree\JobButler\Domain\Service\JobRunnerServiceInterface;
 use TYPO3\Flow\Annotations as Flow;
@@ -111,6 +112,7 @@ class ExecuteJobFinisher extends AbstractFinisher
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
         try {
             $startTime = microtime(true);
+            $options = new JobConfigurationOptions($options);
             if ($this->jobRunnerService->execute($jobConfiguration, $options)) {
                 if ($jobConfiguration->isAsynchronous()) {
                     $this->flashMessageContainer->addMessage(new Message(sprintf('Job "%s" queued with success', $jobConfiguration->getName())));

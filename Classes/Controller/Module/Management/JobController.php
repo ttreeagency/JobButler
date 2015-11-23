@@ -12,6 +12,7 @@ namespace Ttree\JobButler\Controller\Module\Management;
  */
 
 use Ttree\JobButler\Domain\Model\JobConfigurationInterface;
+use Ttree\JobButler\Domain\Model\JobConfigurationOptions;
 use Ttree\JobButler\Domain\Repository\JobConfigurationRepository;
 use Ttree\JobButler\Domain\Service\JobRunnerServiceInterface;
 use TYPO3\Flow\Annotations as Flow;
@@ -104,6 +105,7 @@ class JobController extends ActionController
                 set_time_limit((integer)$this->settings['maximumExecutionTime']);
             }
             $startTime = microtime(true);
+            $options = new JobConfigurationOptions($options);
             if ($this->jobRunnerService->execute($jobConfiguration, $options)) {
                 if ($jobConfiguration->isAsynchronous()) {
                     $this->addFlashMessage(sprintf('Job "%s" queued with success', $jobConfiguration->getName()), '', Message::SEVERITY_OK);

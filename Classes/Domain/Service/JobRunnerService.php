@@ -12,6 +12,7 @@ namespace Ttree\JobButler\Domain\Service;
  */
 
 use Ttree\JobButler\Domain\Model\JobConfigurationInterface;
+use Ttree\JobButler\Domain\Model\JobConfigurationOptions;
 use Ttree\JobButler\Domain\Repository\JobConfigurationRepository;
 use TYPO3\Flow\Annotations as Flow;
 
@@ -32,7 +33,7 @@ class JobRunnerService implements JobRunnerServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function execute(JobConfigurationInterface $jobConfiguration, array $options = [])
+    public function execute(JobConfigurationInterface $jobConfiguration, JobConfigurationOptions $options)
     {
         $status = $jobConfiguration->execute($options);
         $this->emitJobExecuted($status, $jobConfiguration, $options);
@@ -43,10 +44,10 @@ class JobRunnerService implements JobRunnerServiceInterface
      * @Flow\Signal
      * @param boolean $status
      * @param JobConfigurationInterface $jobConfiguration
-     * @param array $options
+     * @param JobConfigurationOptions $options
      * @return void
      */
-    protected function emitJobExecuted($status, JobConfigurationInterface $jobConfiguration, array $options = [])
+    protected function emitJobExecuted($status, JobConfigurationInterface $jobConfiguration, JobConfigurationOptions $options)
     {
     }
 }

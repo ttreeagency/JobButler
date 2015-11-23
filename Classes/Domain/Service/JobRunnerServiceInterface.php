@@ -11,6 +11,7 @@
 namespace Ttree\JobButler\Domain\Service;
 
 use Ttree\JobButler\Domain\Model\JobConfigurationInterface;
+use Ttree\JobButler\Domain\Model\JobConfigurationOptions;
 
 /**
  * Job Runner Service
@@ -21,8 +22,8 @@ interface JobRunnerServiceInterface
      * Execute the given job configuration
      *
      * @param JobConfigurationInterface $jobConfiguration
-     * @param array $options
+     * @param JobConfigurationOptions $options
      * @return boolean
      */
-    public function execute(JobConfigurationInterface $jobConfiguration, array $options = []);
+    public function execute(JobConfigurationInterface $jobConfiguration, JobConfigurationOptions $options);
 }

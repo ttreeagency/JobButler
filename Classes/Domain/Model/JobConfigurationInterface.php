@@ -94,8 +94,8 @@ interface JobConfigurationInterface
     /**
      * Single execution of the current job
      *
-     * @param array $options List of options
+     * @param JobConfigurationOptions $options List of options
      * @return boolean true on job success, always true for async job
      */
-    public function execute(array $options = []);
+    public function execute(JobConfigurationOptions $options);
 }
