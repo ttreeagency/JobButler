@@ -84,8 +84,8 @@ class ExportDocumentJob extends AbstractJobConfiguration
             ]);
         }
 
-        $this->storeDocument($writer, 'myexport.csv');
-
+        $this->writeDocument($this->getOption('document', 'export.csv'), $writer);
+        
         return true;
     }
 
@@ -93,10 +93,9 @@ class ExportDocumentJob extends AbstractJobConfiguration
 
 ```
 
-The method ```DocumentJobTrait::storeDocument``` will automatically create a new AssetCollection name "Export"
-(check [Settings.yaml](Settings.yaml) to change the asset collection name), and use a persistent cache to keep track of
-created file. If you execute multiple time the same Job, it will resuse the same Document to store the result (this need
-to be improved later on, but currently work correctly).
+The method ```DocumentJobTrait::writeDocument``` will automatically create a new AssetCollection name "Export"
+(check [Settings.yaml](Settings.yaml) to change the asset collection name). Generated document are stored outside
+of the public resource folder, check [Settings.yaml](Settings.yaml) to change the default path. 
 
 Now create a XLIFF file name ```Jobs.xlf``` in the same package, with the following content:
 
@@ -196,7 +195,6 @@ The ``RenderViewHelper``` take care for the finisher configuration and arguments
 Settings
 --------
 
-- ```defaultAssetCollection```: Default name for the default AssetCollection (default: Export)
 - ```maximumExecutionTime```: Override the system maximum excution time from the php.ini (default: 300)
 
 Acknowledgments

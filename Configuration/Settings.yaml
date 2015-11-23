@@ -2,6 +2,7 @@ Ttree:
   JobButler:
 
     defaultAssetCollection: 'Export'
+    temporaryDirectoryBase: '%FLOW_PATH_DATA%JobButler/'
     maximumExecutionTime: 300
 
     allowedActionRedirect:

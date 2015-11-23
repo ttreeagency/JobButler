@@ -95,21 +95,26 @@ class JobController extends ActionController
     public function executeAction($jobIdentifier, array $options = [])
     {
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
-        if ($jobConfiguration === null) {
-            $this->addFlashMessage(sprintf('Unable to find a Job Configuration with identifier "%s"', $jobIdentifier), '', Message::SEVERITY_ERROR);
-            $this->redirect('index');
-        }
-        if ($jobConfiguration->isAsynchronous() && isset($this->settings['maximumExecutionTime'])) {
-            set_time_limit((integer)$this->settings['maximumExecutionTime']);
-        }
-        $startTime = microtime(true);
-        if ($this->jobRunnerService->execute($jobConfiguration, $options)) {
-            if ($jobConfiguration->isAsynchronous()) {
-                $this->addFlashMessage(sprintf('Job "%s" queued with success', $jobConfiguration->getName()), '', Message::SEVERITY_OK);
-            } else {
-                $duration = round(microtime(true) - $startTime, 2);
-                $this->addFlashMessage(sprintf('Job "%s" exectued with success in %s sec.', $jobConfiguration->getName(), $duration), '', Message::SEVERITY_OK);
+        try {
+            if ($jobConfiguration === null) {
+                $this->addFlashMessage(sprintf('Unable to find a Job Configuration with identifier "%s"', $jobIdentifier), '', Message::SEVERITY_ERROR);
+                $this->redirect('index');
             }
+            if ($jobConfiguration->isAsynchronous() && isset($this->settings['maximumExecutionTime'])) {
+                set_time_limit((integer)$this->settings['maximumExecutionTime']);
+            }
+            $startTime = microtime(true);
+            if ($this->jobRunnerService->execute($jobConfiguration, $options)) {
+                if ($jobConfiguration->isAsynchronous()) {
+                    $this->addFlashMessage(sprintf('Job "%s" queued with success', $jobConfiguration->getName()), '', Message::SEVERITY_OK);
+                } else {
+                    $duration = round(microtime(true) - $startTime, 2);
+                    $this->addFlashMessage(sprintf('Job "%s" exectued with success in %s sec.', $jobConfiguration->getName(), $duration), '', Message::SEVERITY_OK);
+                }
+            }
+        } catch (\Exception $exception) {
+            $this->systemLogger->logException($exception);
+            $this->addFlashMessage(sprintf('Failed to execute job "%s" with message: %s', $jobConfiguration->getName(), $exception->getMessage()), '', Message::SEVERITY_ERROR);
         }
         $this->redirect('index');
     }

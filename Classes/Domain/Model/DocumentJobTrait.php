@@ -11,112 +11,64 @@ namespace Ttree\JobButler\Domain\Model;
  * source code.
  */
 
+use Ttree\JobButler\Exception;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Resource\ResourceManager;
-use TYPO3\Media\Domain\Model\AssetCollection;
-use TYPO3\Media\Domain\Model\Document;
-use TYPO3\Media\Domain\Repository\AssetCollectionRepository;
-use TYPO3\Media\Domain\Repository\DocumentRepository;
+use TYPO3\Flow\Utility\Files;
 
 /**
  * A Trait to give utility methods to work with document
  */
 trait DocumentJobTrait
 {
-
     /**
-     * @var AssetCollectionRepository
-     * @Flow\Inject
+     * @var string
+     * @Flow\InjectConfiguration(package="Ttree.JobButler",path="temporaryDirectoryBase")
      */
-    protected $assetCollectionRepository;
+    protected $temporaryDirectoryBase;
 
     /**
-     * @var DocumentRepository
-     * @Flow\Inject
-     */
-    protected $documentRepository;
-
-    /**
-     * @var ResourceManager
-     * @Flow\Inject
-     */
-    protected $resourceManager;
-
-    /**
-     * @param string $content
      * @param string $filename
-     * @return Document
+     * @param string $content
+     * @return void
+     * @throws Exception
      */
-    protected function storeDocument($content, $filename)
+    public function writeDocument($filename, $content)
     {
-        $cacheKey = md5(get_called_class() . '::' . $filename);
-        $createDocument = function ($cacheKey, $content, $filename) {
-            $resource = $this->resourceManager->importResourceFromContent($content, $filename);
-            $this->registry->set($cacheKey, $resource->getSha1());
-            $document = new Document($resource);
-            return $document;
-        };
-
-        if (!$this->registry->has($cacheKey)) {
-            $document = $createDocument($cacheKey, (string)$content, $filename);
-            $this->documentRepository->add($document);
-        } else {
-            $document = $this->documentRepository->findOneByResourceSha1($this->registry->get($cacheKey));
-            if ($document === null) {
-                $document = $createDocument($cacheKey, (string)$content, $filename);
-                $this->documentRepository->add($document);
-            } else {
-                $this->documentRepository->update($document);
-            }
-            $resource = $this->resourceManager->importResourceFromContent((string)$content, $filename);
-            $this->registry->set($cacheKey, $resource->getSha1());
-            $document->setResource($resource);
+        $bytes = file_put_contents($this->getDocumentAbsolutePath($filename), (string)$content);
+        if ($bytes === false) {
+            throw new Exception(sprintf('Unable to write document (%s)', $filename), 1448311912);
         }
-
-        $this->updateAssetCollection($document);
-
-        return $document;
     }
 
     /**
      * @param string $filename
      */
-    protected function deleteDocument($filename)
+    public function removeDocument($filename)
     {
-        $cacheKey = md5(get_called_class() . '::' . $filename);
-        $document = $this->documentRepository->findOneByResourceSha1($this->registry->get($cacheKey));
-        if ($document === null) {
+        $document = $this->getDocumentAbsolutePath($filename);
+        if (!is_file($document)) {
             return;
         }
-        $this->documentRepository->remove($document);
+        unlink($document);
     }
 
     /**
-     * @param Document $document
-     * @return void
+     * @param string $filename
      */
-    protected function updateAssetCollection(Document $document)
+    public function downloadDocument($filename)
     {
-        $assetCollections = $document->getAssetCollections();
-        $collection = $this->createAssetCollectionIfMissing();
-        if (!$assetCollections->contains($collection)) {
-            $assetCollections->add($collection);
-            $document->setAssetCollections($assetCollections);
-            $this->documentRepository->update($document);
-        }
+
     }
 
     /**
-     * @return AssetCollection
+     * @return string
+     * @throws \TYPO3\Flow\Utility\Exception
      */
-    protected function createAssetCollectionIfMissing()
+    protected function getDocumentAbsolutePath($filename)
     {
-        $collectionName = $this->getSettings()['defaultAssetCollection'];
-        $collection = $this->assetCollectionRepository->findOneByTitle($collectionName);
-        if ($collection === null) {
-            $collection = new AssetCollection($collectionName);
-            $this->assetCollectionRepository->add($collection);
-        }
-        return $collection;
+        $path = str_replace('\\', '/', get_called_class());
+        $documentAbsolutePath = $this->temporaryDirectoryBase . '/' . $path . '/';
+        Files::createDirectoryRecursively($documentAbsolutePath);
+        return $documentAbsolutePath . $filename;
     }
 }

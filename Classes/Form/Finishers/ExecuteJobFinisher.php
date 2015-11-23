@@ -13,7 +13,9 @@ namespace Ttree\JobButler\Form\Finishers;
 use Ttree\JobButler\Domain\Repository\JobConfigurationRepository;
 use Ttree\JobButler\Domain\Service\JobRunnerServiceInterface;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Error\Error;
 use TYPO3\Flow\Error\Message;
+use TYPO3\Flow\Log\SystemLoggerInterface;
 use TYPO3\Flow\Mvc\Exception\ForwardException;
 use TYPO3\Flow\Mvc\FlashMessageContainer;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
@@ -48,6 +50,12 @@ class ExecuteJobFinisher extends AbstractFinisher
      * @Flow\Inject
      */
     protected $flashMessageContainer;
+
+    /**
+     * @var SystemLoggerInterface
+     * @Flow\Inject
+     */
+    protected $systemLogger;
 
     /**
      * @var array
@@ -101,14 +109,19 @@ class ExecuteJobFinisher extends AbstractFinisher
     protected function executeJob($jobIdentifier, array $options = [])
     {
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
-        $startTime = microtime(true);
-        if ($this->jobRunnerService->execute($jobConfiguration, $options)) {
-            if ($jobConfiguration->isAsynchronous()) {
-                $this->flashMessageContainer->addMessage(new Message(sprintf('Job "%s" queued with success', $jobConfiguration->getName())));
-            } else {
-                $duration = round(microtime(true) - $startTime, 2);
-                $this->flashMessageContainer->addMessage(new Message(sprintf('Job "%s" exectued with success in %s sec.', $jobConfiguration->getName(), $duration)));
+        try {
+            $startTime = microtime(true);
+            if ($this->jobRunnerService->execute($jobConfiguration, $options)) {
+                if ($jobConfiguration->isAsynchronous()) {
+                    $this->flashMessageContainer->addMessage(new Message(sprintf('Job "%s" queued with success', $jobConfiguration->getName())));
+                } else {
+                    $duration = round(microtime(true) - $startTime, 2);
+                    $this->flashMessageContainer->addMessage(new Message(sprintf('Job "%s" exectued with success in %s sec.', $jobConfiguration->getName(), $duration)));
+                }
             }
+        } catch (\Exception $exception) {
+            $this->systemLogger->logException($exception);
+            $this->flashMessageContainer->addMessage(new Error(sprintf('Failed to execute job "%s" with message: %s', $jobConfiguration->getName(), $exception->getMessage())));
         }
     }
 
