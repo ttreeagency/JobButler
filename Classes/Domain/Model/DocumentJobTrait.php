@@ -61,10 +61,11 @@ trait DocumentJobTrait
     }
 
     /**
+     * @param string $filename
      * @return string
      * @throws \TYPO3\Flow\Utility\Exception
      */
-    protected function getDocumentAbsolutePath($filename)
+    protected function getDocumentAbsolutePath($filename = null)
     {
         $path = str_replace('\\', '/', get_called_class());
         $documentAbsolutePath = $this->temporaryDirectoryBase . '/' . $path . '/';
