@@ -11,17 +11,19 @@
             <p>{jobConfiguration.description}</p>
         </div>
         <div class="widget-footer">
-            <f:if condition="{jobConfiguration.options}">
-                <f:form.button class="neos-button" type="submit" name="action" value="configure" title="Configure the current job now" data="{neos-toggle: 'tooltip'}">
-                    <i class="icon-gear"></i>
+            <f:comment>
+                <f:if condition="{jobConfiguration.options}">
+                    <f:form.button class="neos-button" type="submit" name="action" value="configure" title="Configure the current job now" data="{neos-toggle: 'tooltip'}">
+                        <i class="icon-gear"></i>
+                    </f:form.button>
+                </f:if>
+                <f:form.button class="neos-button" type="submit" name="action" value="history" title="Show the history of the current job" data="{neos-toggle: 'tooltip'}">
+                    <i class="icon-calendar"></i>
                 </f:form.button>
-            </f:if>
-            <f:form.button class="neos-button" type="submit" name="action" value="history" title="Show the history of the current job" data="{neos-toggle: 'tooltip'}">
-                <i class="icon-calendar"></i>
-            </f:form.button>
-            <f:form.button class="neos-button" type="submit" name="action" value="schedule" title="Schedule the current job" data="{neos-toggle: 'tooltip'}">
-                <i class="icon-time"></i>
-            </f:form.button>
+                <f:form.button class="neos-button" type="submit" name="action" value="schedule" title="Schedule the current job" data="{neos-toggle: 'tooltip'}">
+                    <i class="icon-time"></i>
+                </f:form.button>
+            </f:comment>
             <f:if condition="{jobConfiguration.wizardFactoryClass}">
                 <f:then>
                     <f:form.button class="neos-button neos-button-primary" type="submit" name="action" value="configurationWizard" title="Configure the current job and execute" data="{neos-toggle: 'tooltip'}">
