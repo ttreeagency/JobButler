@@ -95,13 +95,14 @@ class JobController extends ActionController
      */
     public function executeAction($jobIdentifier, array $options = [])
     {
+        ini_set('memory_limit', -1);
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
         try {
             if ($jobConfiguration === null) {
                 $this->addFlashMessage(sprintf('Unable to find a Job Configuration with identifier "%s"', $jobIdentifier), '', Message::SEVERITY_ERROR);
                 $this->redirect('index');
             }
-            if ($jobConfiguration->isAsynchronous() && isset($this->settings['maximumExecutionTime'])) {
+            if (isset($this->settings['maximumExecutionTime'])) {
                 set_time_limit((integer)$this->settings['maximumExecutionTime']);
             }
             $startTime = microtime(true);
