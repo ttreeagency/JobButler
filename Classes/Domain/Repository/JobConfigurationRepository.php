@@ -76,10 +76,10 @@ class JobConfigurationRepository
         $jobs = $this->getAvailableJobConfigurations($this->objectManager);
         foreach ($jobs as $job) {
             /** @var JobConfigurationInterface $job */
-            if ($job['identifier'] !== $identifier) {
+            if ($job['implementation'] !== $identifier) {
                 continue;
             }
-            return $this->objectManager->get($job['implementation']);
+            return new $job['implementation'];
         }
     }
 
@@ -97,11 +97,8 @@ class JobConfigurationRepository
         $result = [];
 
         foreach ($reflectionService->getAllImplementationClassNamesForInterface(self::JOB_CONFIGURATION_INTERFACE) as $implementation) {
-            /** @var JobConfigurationInterface $jobConfiguration */
-            $jobConfiguration = $objectManager->get($implementation);
-            $result[$jobConfiguration->getIdentifier()] = [
-                'implementation' => $implementation,
-                'identifier' => $jobConfiguration->getIdentifier()
+            $result[$implementation] = [
+                'implementation' => $implementation
             ];
         }
 
