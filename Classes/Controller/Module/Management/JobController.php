@@ -145,16 +145,33 @@ class JobController extends ActionController
     {
         /** @var DocumentJobTrait $jobConfiguration */
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
-        $dirname = rtrim(dirname($path));
-        if (rtrim($jobConfiguration->getDocumentAbsolutePath(), '/') !== $dirname) {
+        $dirname = Files::getNormalizedPath(Files::getUnixStylePath(dirname($path)));
+        if ($jobConfiguration->getDocumentAbsolutePath() !== $dirname) {
             $this->addFlashMessage(sprintf('The current job (%s) path does not match the requested path (%s)', $jobIdentifier, $path), '', Message::SEVERITY_ERROR);
-            $this->redirect('index');
+            $this->redirect('downloadCenter', null, null, ['jobIdentifier' => $jobIdentifier]);
         }
 
         header('Content-Type: application/octet-stream');
         header('Content-Transfer-Encoding: Binary');
         header('Content-disposition: attachment; filename="' . basename($path) . '"');
         readfile($path); // do the double-download-dance (dirty but worky)
+    }
+
+    /**
+     * @param string $jobIdentifier
+     * @param string $path
+     */
+    public function deleteAction($jobIdentifier, $path)
+    {
+        /** @var DocumentJobTrait $jobConfiguration */
+        $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
+        $dirname = Files::getNormalizedPath(Files::getUnixStylePath(dirname($path)));
+        if ($jobConfiguration->getDocumentAbsolutePath() !== $dirname) {
+            $this->addFlashMessage(sprintf('The current job (%s) path does not match the requested path (%s)', $jobIdentifier, $path), '', Message::SEVERITY_ERROR);
+            $this->redirect('downloadCenter', null, null, ['jobIdentifier' => $jobIdentifier]);
+        }
+        unlink($path);
+        $this->redirect('downloadCenter', null, null, ['jobIdentifier' => $jobIdentifier]);
     }
 
     /**

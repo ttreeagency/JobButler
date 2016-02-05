@@ -7,7 +7,7 @@ privilegeTargets:
   'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
 
     'Ttree.JobButler:ExecuteJobs':
-      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|redirect|configurationWizard|downloadCenter|download)Action())'
+      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|redirect|configurationWizard|downloadCenter|download|delete)Action())'
 
 roles:
 

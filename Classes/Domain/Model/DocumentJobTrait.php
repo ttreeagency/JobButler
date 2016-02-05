@@ -78,6 +78,6 @@ trait DocumentJobTrait
         $path = str_replace('\\', '/', get_called_class());
         $documentAbsolutePath = $this->temporaryDirectoryBase . $path . '/';
         Files::createDirectoryRecursively($documentAbsolutePath);
-        return $documentAbsolutePath . $filename;
+        return Files::getNormalizedPath($documentAbsolutePath . $filename);
     }
 }
