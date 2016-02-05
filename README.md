@@ -28,6 +28,8 @@ The package provide a backend module with a simple interface where Editors or Ad
 - [x] Pass options to a Job before manual execution
 - [x] Filter job list by searching
 - [x] Filter job list by tagging
+- [x] Job can produce files (export), use the ```DocumentJobTrait```
+- [ ] Create web hook to trigger job execution from external source
 - [ ] Schedule a Job (integrate with Ttree.Scheduler)
 - [ ] View the execution history for a given Job
 
