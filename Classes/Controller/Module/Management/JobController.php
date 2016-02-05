@@ -11,6 +11,7 @@ namespace Ttree\JobButler\Controller\Module\Management;
  * source code.
  */
 
+use Cocur\Slugify\Slugify;
 use Ttree\JobButler\Domain\Model\DocumentJobTrait;
 use Ttree\JobButler\Domain\Model\JobConfigurationInterface;
 use Ttree\JobButler\Domain\Model\JobConfigurationOptions;
@@ -47,8 +48,14 @@ class JobController extends ActionController
     public function indexAction()
     {
         $jobs = $this->jobConfigurationRepository->findAll();
-        $tags = ['deploy', 'export'];
-        $this->view->assign('jobs', $jobs);
+        $tags = [];
+        foreach ($jobs as $job) {
+            $tags = array_merge($tags, $job->getTags());
+        }
+        $slugify = new Slugify();
+        $tags = array_map(function($tag) use ($slugify) {
+            return $slugify->slugify(mb_strtolower($tag));
+        }, array_unique($tags));
         $this->view->assignMultiple([
             'jobs' => $jobs,
             'tags' => $tags,

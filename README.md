@@ -23,11 +23,13 @@ Features
 
 The package provide a backend module with a simple interface where Editors or Administrators can:
 
-1. View all available Jobs
-2. Execute a Job
-3. Schedule a Job (TODO, integrate with Ttree.Scheduler)
-4. View the execution history for a given Job (TODO)
-
+- [x] View all available Jobs
+- [x] Manual Job execution
+- [x] Pass options to a Job before manual execution
+- [x] Filter job list by searching
+- [x] Filter job list by tagging
+- [ ] Schedule a Job (integrate with Ttree.Scheduler)
+- [ ] View the execution history for a given Job
 
 ![Backend Module](http://g.recordit.co/N0U74HQIY7.gif)
 

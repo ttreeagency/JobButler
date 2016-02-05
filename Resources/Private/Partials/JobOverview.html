@@ -1,6 +1,6 @@
 {namespace neos=TYPO3\Neos\ViewHelpers}
-{namespace site=Ttree\ArchitectesCh\ViewHelpers}
-<div class="jobbutler-grid__item {jobConfiguration.tags -> site:implode(prefix: 'tag--')}">
+{namespace j=Ttree\JobButler\ViewHelpers}
+<div class="jobbutler-grid__item {jobConfiguration.tags -> j:implode(prefix: 'tag--')}">
     <f:form id="{jobConfiguration.shortIdentifier}" class="widget" style="height: 200px;" method="post" action="redirect">
         <div class="widget-header">
             <i class="icon-{jobConfiguration.icon} neos-pull-left"></i>
