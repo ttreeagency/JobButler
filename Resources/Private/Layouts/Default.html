@@ -1,15 +1,48 @@
+<link rel="stylesheet" href="{f:uri.resource(path: 'resource://Ttree.JobButler/Public/Styles/default.css')}"/>
 <div class="{settings.bodyClasses}">
-    <div class="ttree-jobbutler-options">
-        <f:render section="Options" optional="TRUE" />
-    </div>
-    <div class="ttree-jobbutler-content{f:if(condition: '{tags -> f:count()} > 25', then: ' ttree-jobbutler-aside-condensed')}">
-        <div class="ttree-jobbutler-assets">
-            <div class="neos-notification-container">
-                <f:render partial="FlashMessages" />
-            </div>
+    <f:render section="subtitle" optional="1"/>
 
-            <f:render section="Content" />
-        </div>
+    <div class="neos-module-container">
+        <f:render partial="Module/FlashMessages"/>
     </div>
+
+    <f:render section="validationResults" optional="1"/>
+
+    <f:render section="content"/>
 </div>
-<f:render section="Scripts" optional="TRUE" />
+<f:render section="scripts" optional="TRUE"/>
+<script src="{f:uri.resource(path: 'resource://Ttree.JobButler/Public/JavaScript/isotope.pkgd.min.js')}"></script>
+<script>
+    $(function () {
+        var qsRegex;
+        var $grid = $('.jobbutler-grid').isotope({
+            itemSelector: '.jobbutler-grid__item',
+            layoutMode: 'fitRows',
+            filter: function () {
+                return qsRegex ? $(this).text().match(qsRegex) : true;
+            }
+        });
+        $('.jobbutler__filter-button-group').on('click', 'button', function () {
+            var filterValue = $(this).attr('data-filter');
+            $grid.isotope({filter: filterValue});
+        });
+        var $quicksearch = $('.jobbutler__quicksearch').keyup(jobbutler__debounce(function () {
+            qsRegex = new RegExp($quicksearch.val(), 'gi');
+            $grid.isotope();
+        }, 200));
+
+    });
+    function jobbutler__debounce(fn, threshold) {
+        var timeout;
+        return function debounced() {
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            function delayed() {
+                fn();
+                timeout = null;
+            }
+            timeout = setTimeout(delayed, threshold || 100);
+        }
+    }
+</script>

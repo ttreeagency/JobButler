@@ -1,0 +1,12 @@
+.jobbutler-grid {
+
+}
+
+.jobbutler-grid__item {
+    display: inline-block;
+    width: 33%;
+    border-right: 2px solid #222;
+}
+.jobbutler-grid__item .widget {
+    margin-bottom: 2px;
+}

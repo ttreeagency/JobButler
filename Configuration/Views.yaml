@@ -1,5 +1,5 @@
 -
-  requestFilter: 'mainRequest.isPackage("TYPO3.Neos") && isPackage("Ttree.JobButler") && isController("Module\Management\Job")'
+  requestFilter: 'mainRequest.isPackage("TYPO3.Neos") && isFormat("html") && isPackage("Ttree.JobButler") && isController("Module\Management\Job")'
   options:
     'layoutRootPaths':
       'Ttree.JobButler': 'resource://Ttree.JobButler/Private/Layouts'

@@ -14,8 +14,6 @@ namespace Ttree\JobButler\Domain\Repository;
 use Ttree\JobButler\Domain\Model\JobConfigurationInterface;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Object\ObjectManagerInterface;
-use TYPO3\Flow\Tests\Unit\Utility\PositionalArraySorterTest;
-use TYPO3\Flow\Utility\PositionalArraySorter;
 use TYPO3\Flow\Utility\Unicode\Functions;
 
 /**
@@ -50,21 +48,17 @@ class JobConfigurationRepository
             $implementation = $this->objectManager->get($jobConfiguration['implementation']);
             $job = [
                 'name' => $implementation->getName(),
-                'implementation' => $implementation
+                'implementation' => $implementation,
+                'tags' => $implementation->getTags()
             ];
-            foreach ($implementation->getTags() as $tag) {
-                if (!isset($jobConfigurations[$tag])) {
-                    $jobConfigurations[$tag] = [];
-                }
-                $jobConfigurations[$tag][] = $job;
-            }
+            $jobConfigurations[] = $job;
         }
 
-        foreach ($jobConfigurations as $tag => $jobConfigurationsByTag) {
-            $jobConfigurations[$tag] = $this->orderJobs($jobConfigurationsByTag);
-        }
+        usort($jobConfiguration, function($a, $b) {
+            return natsort($a['name'], $b['name']);
+        });
 
-        return $jobConfigurations;
+        return $this->orderJobs($jobConfigurations);
     }
 
     /**

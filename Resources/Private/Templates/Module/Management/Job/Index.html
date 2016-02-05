@@ -1,12 +1,18 @@
 {namespace neos=TYPO3\Neos\ViewHelpers}
 <f:layout name="Default" />
 
-<f:section name="Title">Available Jobs</f:section>
-
-<f:section name="Content">
-    <f:for each="{jobs}" as="jobsByTag" key="tag">
-        <h1>{tag}</h1>
-        <hr>
-        <f:render partial="ListView" arguments="{jobs: jobsByTag}" />
-    </f:for>
+<f:section name="content">
+    <div class="neos-row-fluid">
+        <div class="button-group jobbutler__filter-button-group">
+            <input type="text" class="jobbutler__quicksearch" placeholder="Search" />
+            <button class="neos-button" data-filter="*">show all</button>
+            <f:for each="{tags}" as="tag">
+                <button class="neos-button" data-filter=".tag--{tag}">{tag}</button>
+            </f:for>
+        </div>
+    </div>
+    <hr>
+    <div class="neos-row-fluid">
+        <f:render partial="ListView" arguments="{jobs: jobs}" />
+    </div>
 </f:section>

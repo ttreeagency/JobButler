@@ -11,11 +11,12 @@ Ttree:
       'history': 'forward'
       'schedule': 'forward'
       'configurationWizard': 'redirect'
+      'downloadCenter': 'redirect'
 
     jobSettings:
       '*':
         'tags':
-          'all': TRUE
+          'all': FALSE
 
 TYPO3:
 

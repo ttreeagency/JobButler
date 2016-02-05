@@ -1,0 +1,45 @@
+{namespace neos=TYPO3\Neos\ViewHelpers}
+{namespace job=Ttree\JobButler\ViewHelpers}
+<f:layout name="Default" />
+
+<f:section name="subtitle">
+    <h1>Download "{jobConfiguration.name}"</h1>
+</f:section>
+
+<f:section name="content">
+    <table class="neos-table">
+        <thead>
+        <tr>
+            <th>File</th>
+            <th>Creation date</th>
+            <th>Size</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <f:for each="{files}" as="file">
+        <tr>
+            <td title="">
+                {file.name}
+            </td>
+            <td>
+                {file.creationDate -> f:format.date(format: "d.m.Y - H:i:s")}
+            </td>
+            <td title="">
+                {file.filesize -> f:format.bytes()}
+            </td>
+            <td class="neos-action">
+                <div class="neos-pull-right">
+                    <f:link.action class="neos-button neos-button-primary" action="download" arguments="{jobIdentifier: jobConfiguration.identifier, path: file.path}">
+                        <i class="icon-download-alt icon-white"></i>
+                    </f:link.action>
+                    <f:link.action class="neos-button neos-button-danger" action="delete" arguments="{jobIdentifier: jobConfiguration.identifier, path: file.path}">
+                        <i class="icon-trash icon-white"></i>
+                    </f:link.action>
+                </div>
+            </td>
+        </tr>
+        </f:for>
+        </tbody></table>
+</f:section>

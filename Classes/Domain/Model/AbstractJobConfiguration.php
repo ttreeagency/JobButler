@@ -53,6 +53,11 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
     protected $defaultOptions = [];
 
     /**
+     * @var string
+     */
+    protected $defaultIcon = 'tasks';
+
+    /**
      * Get package settings
      */
     public function getSettings()
@@ -92,7 +97,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getIcon()
     {
-        return $this->getOption('icon', 'tasks');
+        return $this->getOption('icon', $this->defaultIcon);
     }
 
     /**

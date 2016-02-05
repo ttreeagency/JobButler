@@ -2,10 +2,10 @@
 {namespace job=Ttree\JobButler\ViewHelpers}
 <f:layout name="Default" />
 
-<f:section name="Title">Job Configuration Wizard</f:section>
-
-<f:section name="Content">
+<f:section name="subtitle">
     <h1>Configure "{jobConfiguration.name}"</h1>
-    <br>
+</f:section>
+
+<f:section name="content">
     <job:render factoryClass="{jobConfiguration.wizardFactoryClass}" jobConfiguration="{jobConfiguration}" />
 </f:section>

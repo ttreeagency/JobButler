@@ -27,6 +27,14 @@ trait DocumentJobTrait
     protected $temporaryDirectoryBase;
 
     /**
+     * @return boolean
+     */
+    public function getShowFileBrowser()
+    {
+        return true;
+    }
+
+    /**
      * @param string $filename
      * @param string $content
      * @return void
@@ -65,10 +73,10 @@ trait DocumentJobTrait
      * @return string
      * @throws \TYPO3\Flow\Utility\Exception
      */
-    protected function getDocumentAbsolutePath($filename = null)
+    public function getDocumentAbsolutePath($filename = null)
     {
         $path = str_replace('\\', '/', get_called_class());
-        $documentAbsolutePath = $this->temporaryDirectoryBase . '/' . $path . '/';
+        $documentAbsolutePath = $this->temporaryDirectoryBase . $path . '/';
         Files::createDirectoryRecursively($documentAbsolutePath);
         return $documentAbsolutePath . $filename;
     }

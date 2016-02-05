@@ -11,10 +11,8 @@ namespace Ttree\JobButler\Domain\Model;
  * source code.
  */
 
-use Ttree\JobButler\Exception;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Utility\Arrays;
-use TYPO3\Flow\Utility\Files;
 
 /**
  * Job Configuration Options

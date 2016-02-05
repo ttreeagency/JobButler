@@ -11,6 +11,7 @@ namespace Ttree\JobButler\Controller\Module\Management;
  * source code.
  */
 
+use Ttree\JobButler\Domain\Model\DocumentJobTrait;
 use Ttree\JobButler\Domain\Model\JobConfigurationInterface;
 use Ttree\JobButler\Domain\Model\JobConfigurationOptions;
 use Ttree\JobButler\Domain\Repository\JobConfigurationRepository;
@@ -18,6 +19,7 @@ use Ttree\JobButler\Domain\Service\JobRunnerServiceInterface;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Error\Message;
 use TYPO3\Flow\Mvc\Controller\ActionController;
+use TYPO3\Flow\Utility\Files;
 
 /**
  * Controller for asset handling
@@ -45,7 +47,12 @@ class JobController extends ActionController
     public function indexAction()
     {
         $jobs = $this->jobConfigurationRepository->findAll();
+        $tags = ['deploy', 'export'];
         $this->view->assign('jobs', $jobs);
+        $this->view->assignMultiple([
+            'jobs' => $jobs,
+            'tags' => $tags,
+        ]);
     }
 
     /**
@@ -82,11 +89,65 @@ class JobController extends ActionController
                     'options' => $options
                 ]);
                 break;
+            case 'downloadCenter':
+                $this->forward($action, null, null, [
+                    'jobIdentifier' => $jobIdentifier
+                ]);
+                break;
             default:
                 $this->addFlashMessage(sprintf('Illegal action (%s), check your settings.', $action), '', Message::SEVERITY_ERROR);
 
                 $this->redirect('index');
         }
+    }
+
+    /**
+     * @param string $jobIdentifier
+     */
+    public function downloadCenterAction($jobIdentifier)
+    {
+        /** @var DocumentJobTrait $jobConfiguration */
+        $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
+        if ($jobConfiguration->getShowFileBrowser() !== true) {
+            $this->addFlashMessage(sprintf('The current job (%s) does not implement "DocumentJobTrait"', $jobIdentifier), '', Message::SEVERITY_ERROR);
+            $this->redirect('index');
+        }
+        $files = Files::readDirectoryRecursively($jobConfiguration->getDocumentAbsolutePath());
+        $files = array_map(function($file) {
+            return [
+                'path' => $file,
+                'creationDate' => \DateTime::createFromFormat('s', filemtime($file)),
+                'filesize' => filesize($file),
+                'name' => basename($file)
+            ];
+        }, $files);
+        usort($files, function($a, $b) {
+            return strnatcmp($a['name'], $b['name']);
+        });
+        $this->view->assignMultiple([
+            'files' => $files,
+            'jobConfiguration' => $jobConfiguration
+        ]);
+    }
+
+    /**
+     * @param string $jobIdentifier
+     * @param string $path
+     */
+    public function downloadAction($jobIdentifier, $path)
+    {
+        /** @var DocumentJobTrait $jobConfiguration */
+        $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
+        $dirname = rtrim(dirname($path));
+        if (rtrim($jobConfiguration->getDocumentAbsolutePath(), '/') !== $dirname) {
+            $this->addFlashMessage(sprintf('The current job (%s) path does not match the requested path (%s)', $jobIdentifier, $path), '', Message::SEVERITY_ERROR);
+            $this->redirect('index');
+        }
+
+        header('Content-Type: application/octet-stream');
+        header('Content-Transfer-Encoding: Binary');
+        header('Content-disposition: attachment; filename="' . basename($path) . '"');
+        readfile($path); // do the double-download-dance (dirty but worky)
     }
 
     /**
@@ -112,7 +173,12 @@ class JobController extends ActionController
                     $this->addFlashMessage(sprintf('Job "%s" queued with success', $jobConfiguration->getName()), '', Message::SEVERITY_OK);
                 } else {
                     $duration = round(microtime(true) - $startTime, 2);
-                    $this->addFlashMessage(sprintf('Job "%s" exectued with success in %s sec.', $jobConfiguration->getName(), $duration), '', Message::SEVERITY_OK);
+                    if ($duration > 0) {
+                        $message = sprintf('Job "%s" exectued with success in %s sec.', $jobConfiguration->getName(), $duration);
+                    } else {
+                        $message = sprintf('Job "%s" exectued with success.', $jobConfiguration->getName());
+                    }
+                    $this->addFlashMessage($message, '', Message::SEVERITY_OK);
                 }
             }
         } catch (\Exception $exception) {
@@ -129,28 +195,6 @@ class JobController extends ActionController
     {
         $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
         $this->view->assign('jobConfiguration', $jobConfiguration);
-    }
-
-    /**
-     * @param string $jobIdentifier
-     * @param array $options
-     */
-    public function historyAction($jobIdentifier, array $options = [])
-    {
-        $jobConfiguration = $this->loadJobConfiguration($jobIdentifier);
-        $this->addFlashMessage('This action is currently not implemented', '', Message::SEVERITY_WARNING);
-        $this->redirect('index');
-    }
-
-    /**
-     * @param string $jobIdentifier
-     * @param array $options
-     */
-    public function scheduleAction($jobIdentifier, array $options = [])
-    {
-        $jobConfiguration = $this->loadJobConfiguration($jobIdentifier);
-        $this->addFlashMessage('This action is currently not implemented', '', Message::SEVERITY_ERROR);
-        $this->redirect('index');
     }
 
     /**

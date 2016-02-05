@@ -7,14 +7,11 @@ privilegeTargets:
   'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
 
     'Ttree.JobButler:ExecuteJobs':
-      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|history|schedule|redirect|configurationWizard)Action())'
-
-    'Ttree.JobButler:ManageJobs':
-      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|history|schedule|redirect|configurationWizard)Action())'
+      matcher: 'method(Ttree\JobButler\Controller\Module\Management\JobController->(index|execute|redirect|configurationWizard|downloadCenter|download)Action())'
 
 roles:
 
-  'TYPO3.Neos:Editor':
+  'Ttree.JobButler:User':
     privileges:
       -
         privilegeTarget: 'Ttree.JobButler:ExecuteJobs'
@@ -23,5 +20,5 @@ roles:
   'TYPO3.Neos:Administrator':
     privileges:
       -
-        privilegeTarget: 'Ttree.JobButler:ManageJobs'
+        privilegeTarget: 'Ttree.JobButler:ExecuteJobs'
         permission: GRANT
