@@ -29,7 +29,7 @@ The package provide a backend module with a simple interface where Editors or Ad
 4. View the execution history for a given Job (TODO)
 
 
-![Backend Module](https://dl.dropboxusercontent.com/s/uu805iihinsjooz/2015-11-10%20at%2014.53.png?dl=0)
+![Backend Module](http://g.recordit.co/N0U74HQIY7.gif)
 
 Check the issue tracker to follow ongoing features.
 
