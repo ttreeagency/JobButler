@@ -56,6 +56,10 @@ You can create a simple class like this one:
 <?php
 namespace Your\Package\JobConfiguration;
 
+use \Ttree\JobButler\Domain\Model\AbstractJobConfiguration;
+use \Ttree\JobButler\Domain\Model\DocumentJobTrait;
+use \Ttree\JobButler\Domain\Model\JobConfigurationOptions;
+
 /**
  * Export Document Job
  */
@@ -68,7 +72,7 @@ class ExportDocumentJob extends AbstractJobConfiguration
         return 'print';
     }
 
-    public function execute(array $options = [])
+    public function execute(JobConfigurationOptions $options = null)
     {
         $context = $this->createContext('live');
         $sideNode = $context->getNode('/sites/yoursite');
@@ -91,6 +95,11 @@ class ExportDocumentJob extends AbstractJobConfiguration
         $this->writeDocument($this->getOption('document', 'export.csv'), $writer);
         
         return true;
+    }
+
+    public function getPackageKey()
+    {
+        return "Vendor.PackageKey";
     }
 
 }

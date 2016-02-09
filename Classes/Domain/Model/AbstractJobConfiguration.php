@@ -144,7 +144,7 @@ abstract class AbstractJobConfiguration implements JobConfigurationInterface
      */
     public function getName()
     {
-        return $this->translate($this->getNormalizedIdentifier() . '.name') ?: sprintf('Undefined (%s)', $this->getNormalizedIdentifier());
+        return $this->translate($this->getNormalizedIdentifier() . '.name') ?: sprintf('Undefined (%s)', $this->getNormalizedIdentifier() . '.name');
     }
 
     /**
