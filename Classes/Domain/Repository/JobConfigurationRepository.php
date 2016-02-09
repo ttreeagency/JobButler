@@ -55,7 +55,7 @@ class JobConfigurationRepository
         }
 
         usort($jobConfigurations, function ($a, $b) {
-            return natsort($a['name'], $b['name']);
+            return strnatcmp($a['name'], $b['name']);
         });
 
         return $this->orderJobs($jobConfigurations);
