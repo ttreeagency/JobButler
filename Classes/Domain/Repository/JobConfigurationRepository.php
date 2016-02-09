@@ -54,7 +54,7 @@ class JobConfigurationRepository
             $jobConfigurations[] = $job;
         }
 
-        usort($jobConfigurations, function($a, $b) {
+        usort($jobConfigurations, function ($a, $b) {
             return natsort($a['name'], $b['name']);
         });
 

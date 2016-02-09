@@ -30,7 +30,7 @@ class ImplodeViewHelper extends AbstractViewHelper
         if ($value === null) {
             $value = $this->renderChildren();
         }
-        $value = array_map(function($item) use ($prefix, $slugify) {
+        $value = array_map(function ($item) use ($prefix, $slugify) {
             return mb_strtolower($prefix . $slugify->slugify($item));
         }, $value);
 

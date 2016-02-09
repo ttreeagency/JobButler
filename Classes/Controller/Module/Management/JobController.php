@@ -53,7 +53,7 @@ class JobController extends ActionController
             $tags = array_merge($tags, $job->getTags());
         }
         $slugify = new Slugify();
-        $tags = array_map(function($tag) use ($slugify) {
+        $tags = array_map(function ($tag) use ($slugify) {
             return $slugify->slugify(mb_strtolower($tag));
         }, array_unique($tags));
         $this->view->assignMultiple([
@@ -120,7 +120,7 @@ class JobController extends ActionController
             $this->redirect('index');
         }
         $files = Files::readDirectoryRecursively($jobConfiguration->getDocumentAbsolutePath());
-        $files = array_map(function($file) {
+        $files = array_map(function ($file) {
             return [
                 'path' => $file,
                 'creationDate' => \DateTime::createFromFormat('s', filemtime($file)),
@@ -128,7 +128,7 @@ class JobController extends ActionController
                 'name' => basename($file)
             ];
         }, $files);
-        usort($files, function($a, $b) {
+        usort($files, function ($a, $b) {
             return strnatcmp($a['name'], $b['name']);
         });
         $this->view->assignMultiple([
