@@ -65,7 +65,6 @@ trait DocumentJobTrait
      */
     public function downloadDocument($filename)
     {
-
     }
 
     /**

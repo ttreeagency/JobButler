@@ -41,5 +41,4 @@ class JobConfigurationOptions
     {
         return Arrays::getValueByPath($this->options, $path);
     }
-
 }
