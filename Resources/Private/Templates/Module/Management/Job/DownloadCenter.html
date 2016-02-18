@@ -7,6 +7,7 @@
 </f:section>
 
 <f:section name="content">
+    <div class="neos-row-fluid">
     <f:if condition="{files -> f:count()}">
         <f:then>
             <table class="neos-table">
@@ -50,5 +51,13 @@
             <p>Sorry, nothing to download, please run this job before getting back here ...</p>
         </f:else>
     </f:if>
-
+    </div>
+    <div class="neos-row-fluid">
+        <f:form id="{jobConfiguration.shortIdentifier}" method="get" action="downloadAsZip">
+            <f:form.hidden name="jobIdentifier" value="{jobConfiguration.identifier}" />
+            <div class="button-group">
+                <button class="neos-button" data-filter="*">Download all as ZIP</button>
+            </div>
+        </f:form>
+    </div>
 </f:section>

@@ -11,6 +11,7 @@ namespace Ttree\JobButler\Controller\Module\Management;
  * source code.
  */
 
+use Alchemy\Zippy\Zippy;
 use Cocur\Slugify\Slugify;
 use Ttree\JobButler\Domain\Model\DocumentJobTrait;
 use Ttree\JobButler\Domain\Model\JobConfigurationInterface;
@@ -154,7 +155,31 @@ class JobController extends ActionController
         header('Content-Type: application/octet-stream');
         header('Content-Transfer-Encoding: Binary');
         header('Content-disposition: attachment; filename="' . basename($path) . '"');
-        readfile($path); // do the double-download-dance (dirty but worky)
+        readfile($path);
+        exit();
+    }
+
+    /**
+     * @param string $jobIdentifier
+     */
+    public function downloadAsZipAction($jobIdentifier)
+    {
+        /** @var JobConfigurationInterface|DocumentJobTrait $jobConfiguration */
+        $jobConfiguration = $this->jobConfigurationRepository->findOneByIdentifier($jobIdentifier);
+        $path = $jobConfiguration->getDocumentAbsolutePath();
+        $name = $jobConfiguration->getName();
+        $slugify = new Slugify();
+        $archiveName = $slugify->slugify($name) . '.zip';
+        $archivePath = $path . '.' . $archiveName;
+        $zippy = Zippy::load();
+        $files = Files::readDirectoryRecursively($path);
+        $zippy->create($archivePath, $files);
+
+        header("Content-Type: application/zip");
+        header('Content-Transfer-Encoding: Binary');
+        header('Content-disposition: attachment; filename="' . $archiveName . '"');
+        readfile($archivePath);
+        exit();
     }
 
     /**

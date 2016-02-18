@@ -8,7 +8,8 @@
   "require": {
     "typo3/flow": "*",
     "typo3/neos": "*",
-    "cocur/slugify": "~1.4"
+    "cocur/slugify": "~1.4",
+    "alchemy/zippy": "~0.3"
   },
   "autoload": {
     "psr-4": {
