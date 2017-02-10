@@ -227,12 +227,16 @@ class JobController extends ActionController
                     } else {
                         $message = sprintf('Job "%s" exectued with success.', $jobConfiguration->getName());
                     }
+                    $message .= ' Memory usage: ' . Files::bytesToSizeString(memory_get_peak_usage(true));
+                    $this->systemLogger->log($message);
                     $this->addFlashMessage($message, '', Message::SEVERITY_OK);
                 }
             }
         } catch (\Exception $exception) {
             $this->systemLogger->logException($exception);
-            $this->addFlashMessage(sprintf('Failed to execute job "%s" with message: %s', $jobConfiguration->getName(), $exception->getMessage()), '', Message::SEVERITY_ERROR);
+            $message = sprintf('Failed to execute job "%s" with message: %s memory: %d', $jobConfiguration->getName(), $exception->getMessage(), Files::bytesToSizeString(memory_get_peak_usage(true)));
+            $this->systemLogger->log($message, LOG_ERR);
+            $this->addFlashMessage($message, '', Message::SEVERITY_ERROR);
         }
         $this->redirect('index');
     }
